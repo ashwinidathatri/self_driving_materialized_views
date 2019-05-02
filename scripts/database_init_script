@@ -1,0 +1,387 @@
+CREATE TABLE aka_name
+(id 			int,
+    person_id 		int,
+    name 		string,
+    imdb_index 		string,
+    name_pcode_cf 	string,
+    name_pcode_nf 	string,
+    surname_pcode 	string,
+    md5sum        	string 
+)
+COMMENT 'Aka Name Table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+===========================================================
+
+CREATE TABLE aka_title (
+    id int,
+    movie_id int,
+    title string,
+    imdb_index string,
+    kind_id int,
+    production_year int,
+    phonetic_code string,
+    episode_of_id int,
+    season_nr int,
+    episode_nr int,
+    note string,
+    md5sum string
+)
+COMMENT 'Aka title Table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+===========================================================
+
+CREATE TABLE cast_info (
+    id int,
+    person_id int,
+    movie_id int,
+    person_role_id int,
+    note string,
+    nr_order int,
+    role_id int
+)
+COMMENT 'Aka cast info table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+==========================================================
+
+
+CREATE TABLE char_name (
+    id int,
+    name string,
+    imdb_index string,
+    imdb_id int,
+    name_pcode_nf string,
+    surname_pcode string,
+    md5sum string
+)
+COMMENT 'Aka char_name table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=========================================================
+
+CREATE TABLE comp_cast_type (
+    id int,
+    kind string
+)
+COMMENT 'Aka comp_cast_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+======================================================
+
+
+CREATE TABLE company_name (
+    id int,
+    name string,
+    country_code string,
+    imdb_id int,
+    name_pcode_nf string,
+    name_pcode_sf string,
+    md5sum string
+)
+COMMENT 'Aka company_name table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+========================================================
+
+
+CREATE TABLE company_type (
+    id int,
+    kind string
+)
+COMMENT 'Aka company_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+======================================================
+
+
+CREATE TABLE complete_cast (
+    id int,
+    movie_id int,
+    subject_id int,
+    status_id int
+)
+COMMENT 'Aka complete_cast table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=======================================================
+
+CREATE TABLE info_type (
+    id int,
+    info string
+)
+COMMENT 'Aka info_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+=====================================================
+
+CREATE TABLE keyword (
+    id int,
+    keyword string,
+    phonetic_code string
+)
+COMMENT 'Aka keyword table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+==================================================
+
+CREATE TABLE kind_type (
+    id int,
+    kind string
+)
+COMMENT 'Aka kind_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=====================================================
+
+CREATE TABLE link_type (
+    id int,
+    link string
+)
+COMMENT 'Aka link_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=========================================================
+
+CREATE TABLE movie_companies (
+    id int,
+    movie_id int,
+    company_id int,
+    company_type_id int,
+    note string
+)
+COMMENT 'Aka movie_companies table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+======================================================
+
+CREATE TABLE movie_info (
+    id int,
+    movie_id int,
+    info_type_id int,
+    info string,
+    note string
+)
+COMMENT 'Aka movie_info table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+========================================================
+
+CREATE TABLE movie_info_idx (
+    id int,
+    movie_id int,
+    info_type_id int,
+    info string,
+    note string
+)
+COMMENT 'Aka movie_info_idx table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+===========================================================
+
+
+CREATE TABLE movie_keyword (
+    id int,
+    movie_id int,
+    keyword_id int
+)
+COMMENT 'Aka movie_keyword table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+==========================================================
+
+CREATE TABLE movie_link (
+    id int,
+    movie_id int,
+    linked_movie_id int,
+    link_type_id int
+)
+COMMENT 'Aka movie_link table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+==========================================================
+
+CREATE TABLE name (
+    id int,
+    name string,
+    imdb_index string,
+    imdb_id int,
+    gender string,
+    name_pcode_cf string,
+    name_pcode_nf string,
+    surname_pcode string,
+    md5sum string
+)
+COMMENT 'Aka name table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=============================================================
+CREATE TABLE person_info (
+    id int,
+    person_id int,
+    info_type_id int,
+    info string,
+    note string
+)
+COMMENT 'Aka person_info table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+===========================================================
+
+CREATE TABLE role_type (
+    id int,
+    role string
+)
+COMMENT 'Aka role_type table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+
+============================================================
+
+CREATE TABLE title (
+    id int,
+    title string,
+    imdb_index string,
+    kind_id int,
+    production_year int,
+    imdb_id int,
+    phonetic_code string,
+    episode_of_id int,
+    season_nr int,
+    episode_nr int,
+    series_years string,
+    md5sum string
+)
+COMMENT 'title table'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+=============================================================
+
+Scripts to move files from local file system to hadoop file system.
+
+
+hdfs dfs -copyFromLocal aka_name.csv /input
+hdfs dfs -copyFromLocal aka_title.csv /input
+hdfs dfs -copyFromLocal cast_info.csv /input
+hdfs dfs -copyFromLocal char_name.csv /input
+hdfs dfs -copyFromLocal comp_cast_type.csv /input
+hdfs dfs -copyFromLocal company_name.csv /input
+hdfs dfs -copyFromLocal company_type.csv /input
+hdfs dfs -copyFromLocal complete_cast.csv /input
+hdfs dfs -copyFromLocal info_type.csv /input
+hdfs dfs -copyFromLocal keyword.csv /input
+hdfs dfs -copyFromLocal kind_type.csv /input
+hdfs dfs -copyFromLocal link_type.csv /input
+hdfs dfs -copyFromLocal movie_companies.csv /input
+hdfs dfs -copyFromLocal movie_info.csv /input
+hdfs dfs -copyFromLocal movie_info_idx.csv /input
+hdfs dfs -copyFromLocal movie_keyword.csv /input
+hdfs dfs -copyFromLocal movie_link.csv /input
+hdfs dfs -copyFromLocal name.csv /input
+hdfs dfs -copyFromLocal person_info.csv /input
+hdfs dfs -copyFromLocal role_type.csv /input
+hdfs dfs -copyFromLocal title.csv /input
+
+===============================================================
+
+
+Scripts to load data to hive.
+
+
+LOAD DATA INPATH '/input/aka_name.csv' INTO TABLE aka_name;
+LOAD DATA INPATH '/input/aka_title.csv' INTO TABLE aka_title;
+LOAD DATA INPATH '/input/cast_info.csv' INTO TABLE cast_info;
+LOAD DATA INPATH '/input/char_name.csv' INTO TABLE char_name;
+LOAD DATA INPATH '/input/comp_cast_type.csv' INTO TABLE comp_cast_type;
+LOAD DATA INPATH '/input/company_name.csv' INTO TABLE company_name;
+LOAD DATA INPATH '/input/company_type.csv' INTO TABLE company_type;
+LOAD DATA INPATH '/input/complete_cast.csv' INTO TABLE complete_cast;
+LOAD DATA INPATH '/input/info_type.csv' INTO TABLE info_type;
+LOAD DATA INPATH '/input/keyword.csv' INTO TABLE keyword;
+LOAD DATA INPATH '/input/kind_type.csv' INTO TABLE kind_type;
+LOAD DATA INPATH '/input/link_type.csv' INTO TABLE link_type;
+LOAD DATA INPATH '/input/movie_companies.csv' INTO TABLE movie_companies;
+LOAD DATA INPATH '/input/movie_info.csv' INTO TABLE movie_info;
+LOAD DATA INPATH '/input/movie_info_idx.csv' INTO TABLE movie_info_idx;
+LOAD DATA INPATH '/input/movie_keyword.csv' INTO TABLE movie_keyword;
+LOAD DATA INPATH '/input/movie_link.csv' INTO TABLE movie_link;
+LOAD DATA INPATH '/input/name.csv' INTO TABLE name;
+LOAD DATA INPATH '/input/person_info.csv' INTO TABLE person_info;
+LOAD DATA INPATH '/input/role_type.csv' INTO TABLE role_type;
+LOAD DATA INPATH '/input/title.csv' INTO TABLE title;
+
+
+
+
+
+

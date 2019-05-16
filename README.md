@@ -1,5 +1,16 @@
-# Self-Driving-Materialized-Views
+# Self Driving Materialized Views
 TODO - Add a good readme.md for this project
+
+### Usage
+To process the JOB dataset which is placed in project/data/JOB, go to folder project and run
+```
+python3 selma_cli.py --process_dataset True 'data/JOB' 'data/JOB/processed/job.pickle'
+```
+
+To see all the options provided by the CLI, you can use the help option
+```
+python3 selma_cli.py -h
+```
 
 # Standard Git workflow for Project
 

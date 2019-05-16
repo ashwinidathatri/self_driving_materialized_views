@@ -2,7 +2,7 @@
 TODO - Add a good readme.md for this project
 
 ### Usage
-To process the JOB dataset which is placed in project/data/JOB, go to folder project and run
+To process the JOB dataset which is placed in *project/data/JOB*, go to folder *project* and run
 ```
 python3 selma_cli.py --process_dataset True 'data/JOB' 'data/JOB/processed/job.pickle'
 ```

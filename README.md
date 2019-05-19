@@ -1,4 +1,4 @@
-# Self-Driving-Materialized-Views
+# Self Driving Materialized Views
 TODO - Add a good readme.md for this project
 
 # Standard Git workflow for Project

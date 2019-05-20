@@ -6,10 +6,14 @@ def main(args):
     print('Hello!')
     if args.process_dataset:
         if args.dataset_path:
-            print('Processing JOB dataset ..')
-            filepath = os.path.join(args.dataset_path, 'processed', 'job_processed.pickle')
-            print(filepath)
-            print(selma.load_parsed_dataset(filepath))
+            print('Processing JOB dataset ..')            
+            outputFile = os.path.join(args.dataset_path, 'processed', 'job_processed.pickle')
+            if not os.path.isfile(outputFile):
+                filepath = args.dataset_path
+                selma.process_job_dataset(filepath)
+            
+            print(outputFile)
+            print(selma.load_parsed_dataset(outputFile))
             print('Processed JOB dataset. The output has been saved into a pickle file in data/JOB/processed/job_processed.pickle!')
         else:
             raise argparse.ArgumentTypeError('Please specify a dataset path buddy!')

@@ -4,7 +4,7 @@ import os
 
 def main(args):
     print('Hello!')
-    print(selma.load_parsed_dataset('/home/rithomas/Desktop/workspace/Self-Driving-Materialized-Views/project/data/JOB/processed/job_processed.pickle'))
+    print(selma.load_parsed_dataset('data/JOB/processed/job_processed.pickle'))
     if False:
         if args.dataset_path:
             print('Processing JOB dataset ..')            
@@ -18,7 +18,7 @@ def main(args):
             print('Processed JOB dataset. The output has been saved into a pickle file in data/JOB/processed/job_processed.pickle!')
         else:
             raise argparse.ArgumentTypeError('Please specify a dataset path buddy!')
-    elif args.load_dataset:
+    elif False: #args.load_dataset:
         if args.dataset_path:
             selma.load_parsed_dataset(args.dataset_path)
         else:

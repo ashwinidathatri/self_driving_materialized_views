@@ -128,15 +128,13 @@ def allTablesIndex(dataPath):
         matrix      = None
         outputfilename    = None
         idx = -1
-        files_to_ignore = ['README.md', 'fkindexes.sql', 'schema.sql', 'selmaparser.py']
+        files_to_ignore = ['processed', 'README.md', 'fkindexes.sql', 'schema.sql', 'selmaparser.py']
         files = [f for f in os.listdir(dataPath) if f not in files_to_ignore]
         for file in files:
             filename = file[file.rfind("/")+1:]
             query_str = os.path.join(dataPath,filename)
-        
-        #parsed_dataset = []
-    
-            #print(filename)
+            print(filename)
+            print(query_str)    
             query_str = open(query_str, "r").read()
                 #print(query_str)
             query_str = query_str.upper()
@@ -195,7 +193,7 @@ def allTablesIndex(dataPath):
         return(vectorTable)
 
 def process_job_dataset(job_dataset_path):
-    files_to_ignore = ['README.md', 'fkindexes.sql', 'schema.sql', 'selmaparser.py']
+    files_to_ignore = ['processed', 'README.md', 'fkindexes.sql', 'schema.sql', 'selmaparser.py']
     files = [f for f in os.listdir(job_dataset_path) if f not in files_to_ignore]
     parsed_dataset = []
     vectorTableindex = allTablesIndex(job_dataset_path)
@@ -218,14 +216,15 @@ def process_job_dataset(job_dataset_path):
     output_path = os.path.join(job_dataset_path, 'processed')
     if not os.path.exists(output_path):
         os.makedirs(output_path)
- 
+    print(parsed_dataset)
     # Store the stuff we parsed to pickle, because why not?
-    with open(os.path.join(output_path, 'job_processed.pickle'), 'w') as f:
+    with open(os.path.join(output_path, 'job_processed.pickle'), 'wb') as f:
         pickle.dump(parsed_dataset, f)    
 
         
 
 def load_parsed_dataset(dataset_path):
+    print(dataset_path)
     with open(dataset_path, 'rb') as pickle_file:
         content = pickle.load(pickle_file)
     return content

@@ -6,7 +6,7 @@ import math
 import random
 
 CREATE_VIEW_ACTION = 1
-N_JOIN_COMBINATIONS = 15
+N_JOIN_COMBINATIONS = 12
 
 class DatabaseEnv(gym.Env):  
 	metadata = {'render.modes': ['human']}   
@@ -119,7 +119,7 @@ class DatabaseEnv(gym.Env):
 		return reward
 
 # Random testing stuff
-env = DatabaseEnv({'max_steps': 20, 'n_tables': 20})
+env = DatabaseEnv({'max_steps': 20, 'n_tables': 4})
 print(env)
 print("Action Space -")
 print(env.action_space)
@@ -130,7 +130,9 @@ print(env.observation_space.high)
 print("Min values for observation space -")
 print(env.observation_space.low)
 
-while(1):
+i = 0
+while(i < env.max_steps):
+	i = i + 1
 	sampled_action = env.action_space.sample()
 	temp = np.eye(N_JOIN_COMBINATIONS)
 	dummy_candidate = temp[np.random.choice(temp.shape[0], size=1)].squeeze()

@@ -1,0 +1,34 @@
+ray_rainbow_cpu_cp0:
+  run: DQN
+  env: CartPole-v0
+  local_dir: "results/cartpole"  
+  checkpoint_freq: 0
+  checkpoint_at_end: False 
+  # number of iterations
+  stop:
+    training_iteration: 500
+  # all other hyperparameters (e.g. length of one iteration)
+  config:
+    adam_epsilon: 0.0003125
+    beta_annealing_fraction: 0.2
+    buffer_size: 50000
+    # we want to evaluate manually, but still need the evaluator
+    evaluation_interval: 1000000
+    exploration_final_eps: 0.0
+    exploration_fraction: .000001
+    final_prioritized_replay_beta: 1.0
+    gamma: 0.99
+    hiddens: [512]
+    learning_starts: 1000
+    lr: .09
+    noisy: False
+    num_atoms: 51
+    num_workers: 0
+    n_step: 3
+    prioritized_replay: True
+    prioritized_replay_alpha: 0.5
+    sample_batch_size: 4
+    schedule_max_timesteps: 2000000
+    target_network_update_freq: 100
+    timesteps_per_iteration: 1000
+    train_batch_size: 128

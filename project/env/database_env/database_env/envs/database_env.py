@@ -6,7 +6,7 @@ import math
 import random
 
 CREATE_VIEW_ACTION = 1
-N_JOIN_COMBINATIONS = 12
+N_JOIN_COMBINATIONS = 190
 
 class DatabaseEnv(gym.Env):  
 	metadata = {'render.modes': ['human']}   
@@ -50,11 +50,12 @@ class DatabaseEnv(gym.Env):
 		self._current_action = np.zeros(N_JOIN_COMBINATIONS)
 		self._lru_info = np.zeros(N_JOIN_COMBINATIONS)
 
-	def step(self, action, candidate):
+	def step(self, action, candidate, step_num):
 		# Use the action predicted by agent to modify the
 		# database environment and calculate reward of the action
 		delay_modifier = (self.current_step / self.max_steps)
 		# print(self._obs_space)
+		print(self.current_step)
 		reward = self._take_action(action, candidate, delay_modifier)
 		# print(self._obs_space)
 		# See the state of the new environment
@@ -62,7 +63,8 @@ class DatabaseEnv(gym.Env):
 
 		# Log some info about this training step
 		info = {}
-		self.current_step += 1
+		
+		self.current_step = step_num
 
 		# Check whether we have reached end of episode
 		done = self.current_step >= self.max_steps

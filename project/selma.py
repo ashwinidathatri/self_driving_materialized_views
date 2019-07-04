@@ -1,6 +1,26 @@
 import os
 import pickle
 import numpy as np
+from agents.agent_runner import DummyAgent
+import gym
+import database_env as env
+from env.env_runner import EnvRunner
+
+def run_environment():
+    env_runner_params = {
+        'max_steps': 10
+    }
+    runner = EnvRunner(env_runner_params)
+    agent_params = {}
+    agent = DummyAgent(agent_params)
+    env_params = {
+        'n_tables': 21,
+        'max_steps': 10
+    }
+    environment = gym.make('foo-v0', args = env_params)
+    runner.run(environment, agent)
+
+run_environment()   
 
 def createVectorTable(tableI):
     iValue  = 0

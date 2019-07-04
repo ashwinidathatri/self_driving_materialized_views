@@ -1,5 +1,5 @@
 from gym.envs.registration import register
  
-register(id='DatabaseEnv-V0', 
+register(id='foo-v0', 
     entry_point='database_env.envs:DatabaseEnv', 
 )

@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import pickle
+import random
 
 class EnvRunner():
 	################## Constructor #####################
@@ -21,12 +22,12 @@ class EnvRunner():
 	# 5. Once i == max_step (Episode end) - Replay history of env for episode
 	#
 	###############################################################
-	def run(self, env):
+	def run(self, env, agent):
 		step = 0
 
 		queries = []
 		exclusion_list = ['schema.sql', 'fkindexes.sql']
-		for root, dirs, files in os.walk('../data/JOB/'):
+		for root, dirs, files in os.walk('/home/richhiey/Desktop/workspace/dbse_project/Self-Driving-Materialized-Views/project/data/JOB'):
 			for file in files:
 				if file in exclusion_list:
 					continue
@@ -34,7 +35,7 @@ class EnvRunner():
 					queries.append(file)
 
 		print(queries)
-		pickle_file_path = '../data/JOB/processed/job_processed.pickle'
+		pickle_file_path = '/home/richhiey/Desktop/workspace/dbse_project/Self-Driving-Materialized-Views/project/data/JOB/processed/job_processed.pickle'
 		with open(pickle_file_path, 'rb') as pickle_file:
 			candidates = pickle.load(pickle_file)
 
@@ -64,7 +65,6 @@ class EnvRunner():
 
 			print('Current candidate ...')
 			curr_candidates = new_candidates['data/JOB/' + selected_query]
-			print(curr_candidates)
 			###########################################################################
 
 			############## Step 2 - Get all candidates and enqueue ####################
@@ -72,16 +72,12 @@ class EnvRunner():
 				candidate = candidate.flatten()
 				# Send to agent and get back action
 				# Currently hacked. Replace with real agent later
-				action = env.action_space.sample()
-				obs, reward, done, info = env.step(action, candidate)
+				# action = agent.take_action(candidate)
+				action = random.randint(0,1)
+				print('Action - ' + str(action))
+				obs, reward, done, info = env.step(action, candidate, step)
+				new_step = False
+				print('Reward - ' + str(reward))
 			###########################################################################
 
-		env.replay_history_on_db()
 		env.reset()
-
-
-params = {
-	'max_steps': 40
-}
-runner = EnvRunner(params)
-runner.run()

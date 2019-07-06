@@ -71,6 +71,7 @@ class DatabaseEnv(gym.Env):
 			name = name[0]
 			print(name)
 			names.append(name)
+		self.table_names = names
 		num = 0
 		for i in range(len(names)):
 			for j in range(i + 1, len(names)):

@@ -61,5 +61,4 @@ WHERE cct1.kind ='cast'
   AND it3.id = pi.info_type_id
   AND k.id = mk.keyword_id
   AND cct1.id = cc.subject_id
-  AND cct2.id = cc.status_id;
-
+  AND cct2.id = cc.status_id

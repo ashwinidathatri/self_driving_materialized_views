@@ -16,5 +16,4 @@ WHERE cn.country_code ='[us]'
   AND mc.company_id = cn.id
   AND ci.movie_id = mc.movie_id
   AND ci.movie_id = mk.movie_id
-  AND mc.movie_id = mk.movie_id;
-
+  AND mc.movie_id = mk.movie_id

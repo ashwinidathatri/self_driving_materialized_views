@@ -32,5 +32,4 @@ WHERE an.name IS NOT NULL
   AND pi.person_id = an.person_id
   AND pi.person_id = ci.person_id
   AND an.person_id = ci.person_id
-  AND ci.movie_id = ml.linked_movie_id;
-
+  AND ci.movie_id = ml.linked_movie_id

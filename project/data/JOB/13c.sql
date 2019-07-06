@@ -28,5 +28,4 @@ WHERE cn.country_code ='[us]'
   AND it.id = miidx.info_type_id
   AND mi.movie_id = miidx.movie_id
   AND mi.movie_id = mc.movie_id
-  AND miidx.movie_id = mc.movie_id;
-
+  AND miidx.movie_id = mc.movie_id

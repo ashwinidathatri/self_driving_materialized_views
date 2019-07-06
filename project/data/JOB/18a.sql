@@ -22,5 +22,4 @@ WHERE ci.note IN ('(producer)',
   AND mi.movie_id = mi_idx.movie_id
   AND n.id = ci.person_id
   AND it1.id = mi.info_type_id
-  AND it2.id = mi_idx.info_type_id;
-
+  AND it2.id = mi_idx.info_type_id

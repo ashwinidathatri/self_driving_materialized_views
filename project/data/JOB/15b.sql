@@ -30,5 +30,4 @@ WHERE cn.country_code = '[us]'
   AND k.id = mk.keyword_id
   AND it1.id = mi.info_type_id
   AND cn.id = mc.company_id
-  AND ct.id = mc.company_type_id;
-
+  AND ct.id = mc.company_type_id

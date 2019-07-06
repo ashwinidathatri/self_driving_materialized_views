@@ -21,5 +21,4 @@ WHERE ci.note ='(voice: English version)'
   AND mc.company_id = cn.id
   AND ci.role_id = rt.id
   AND an1.person_id = ci.person_id
-  AND ci.movie_id = mc.movie_id;
-
+  AND ci.movie_id = mc.movie_id

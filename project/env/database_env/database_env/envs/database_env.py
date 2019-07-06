@@ -8,9 +8,10 @@ from lru import LRU
 from db import Database
 import os
 import pickle 
+from collections import deque
+import time
 
 CREATE_VIEW_ACTION = 1
-N_JOIN_COMBINATIONS = 210
 
 class DatabaseEnv(gym.Env):  
 	metadata = {'render.modes': ['human']}   
@@ -23,12 +24,14 @@ class DatabaseEnv(gym.Env):
 		
 		# Number of tables in the database being considered
 		N_TABLES = 21
-		# N_JOIN_COMBINATIONS = 
-		# 		int(math.factorial(N_TABLES) / 
-		# 			math.factorial(N_TABLES - N_MAX_JOINS) * math.factorial(N_MAX_JOINS))
+		N_JOIN_COMBINATIONS = int((N_TABLES * (N_TABLES - 1)) / 2)
+
+		self.database = Database()
+		self.table_names = self.database.get_table_names_from_hive()
+		self.join_name_mappings = self.get_mapping_for_tables(self.table_names)
 
 		# Maximum number of steps in an episode
-		N_MAX_STEPS = 30
+		N_MAX_STEPS = 5
 		N_MAX_JOINS = 2
 
 		# Define action and observation space
@@ -55,16 +58,31 @@ class DatabaseEnv(gym.Env):
 		pickle_file_path = '/home/richhiey/Desktop/workspace/dbse_project/Self-Driving-Materialized-Views/project/data/JOB/processed/job_processed.pickle'
 		self.candidates = self.get_candidates_for_dataset(pickle_file_path)
 		self.workload_distribution = self.get_workload_distribution(self.queries)
-		self.current_candidate_queue = []
+		self.current_candidate_queue = deque()
 		self._obs_space = np.zeros(N_JOIN_COMBINATIONS)
 		self._current_action = np.zeros(N_JOIN_COMBINATIONS)
 		self.lru_cache_size = 20
 		self.lru_cache = LRU(self.lru_cache_size)
-		self.database = Database()
+
+	def get_mapping_for_tables(self, table_names):
+		mapping = {}
+		names = []
+		for name in table_names:
+			name = name[0]
+			print(name)
+			names.append(name)
+		num = 0
+		for i in range(len(names)):
+			for j in range(i + 1, len(names)):
+				join_name = names[i] + '-' + names[j]
+				num = num + 1
+				mapping[num] = join_name
+		print(mapping)
+		return mapping
 
 	def reset_env_history(self):
 		history = {}
-		for i in range(self.max_steps):
+		for i in range(1, self.max_steps):
 			history[i] = {'actions': [], 'query': ''}
 		return history
 
@@ -105,35 +123,38 @@ class DatabaseEnv(gym.Env):
 		delay_modifier = (self.current_step / self.max_steps)
 		# print(self._obs_space)
 		print(self.current_step)
-
-		if not current_candidate_queue:
+		if not self.current_candidate_queue:
 			self.current_step = self.current_step + 1
 			self.selected_query = np.random.choice(
 				self.queries,
 				size = 1,
 				p = self.workload_distribution)[0]
-			self.history[self.current_step]['query'] = selected_query 
-			candidates = self.get_candidates_for_query(selected_query)
+			self.history[self.current_step]['query'] = self.selected_query 
+			candidates = self.get_candidates_for_query(self.selected_query)
+			print(self.selected_query)
 			for candidate in candidates:
 				candidate = candidate.flatten()
-				self.current_candidate_queue.enqueue(candidate)
+				self.current_candidate_queue.append(candidate)
 
-		current_candidate = self.current_candidate_queue.dequeue()
-		self.lru_cache[current_candidate] = self.selected_query
+		current_candidate = self.current_candidate_queue.popleft()
+		print('Action - ' + str(action))
+		cand_idx = np.where(current_candidate == 1)[0]
+		print('Candidate - ' + self.join_name_mappings[int(cand_idx)])
+		self.lru_cache[self.selected_query] = current_candidate
 
 		# Log some info about this training step
 		self.history[self.current_step]['actions'].append(
 			{
 				'action': action,
-				'candidate': candidate,
+				'candidate': current_candidate,
 				'obs_space': self._obs_space,
-				'eviction': self.lru_cache.peek_last_item()
+				'eviction': self.lru_cache.peek_last_item(),
 			}
 		)
 
 		reward, eviction = self._take_action(action, current_candidate, delay_modifier)
-
-		done = self.current_step >= self.max_steps - 1
+		print('Reward - ' + str(reward))
+		done = self.current_step >= self.max_steps
 		
 		if done and len(self.current_candidate_queue):
 			reward = get_final_reward_for_episode()
@@ -165,38 +186,44 @@ class DatabaseEnv(gym.Env):
 
 	def env_cost_of_episode(self):
 		run_time = 0
-		for step, step_history in history.items():
+		for step, step_history in self.history.items():
 			print('------------ Step - ' + str(step) + ' -------------')
 			# First run the query and check the base cost
 			query = step_history['query']
-			with open(os.path.join('data/JOB/', query),'r') as f:
+			print(query)
+			with open(os.path.join('/home/richhiey/Desktop/workspace/dbse_project/Self-Driving-Materialized-Views/project/data/JOB/', query),'r') as f:
 				query_str = f.read()
-				exp_analyze = self.database.explain_analyze_query(query_str)
-			
-			def parse_for_exec_time(exp_analyze):
-				# parse the explain analuze stuff once you understand it
-				return np.random.randint(100)
+				start_time = time.time()
+				print('Actually executing on database now ..')
+				query_output = self.database.execute_query(query_str)
+				total_time = time.time() - start_time
+				print('Time taken - ' + str(total_time))
+				run_time = run_time + total_time
+				print('Execution done!')
 
 			def get_view_creation_query(tbl_1, tbl_2):
 				view_name = str(tbl_1) + '_' + str(tbl_2)
 				query_str = str(tbl_1) + ' JOIN ' + str(tbl_2) + ';'
 				query_str = query_str + "CREATE VIEW IF NOT EXISTS " + view_name + " AS " + query_str
 				return query_str
-
-			execution_time = parse_for_exec_time(exp_analyze)
-			run_time = run_time + execution_time
 			
 			# Then run through the history and get costs for the actions
 			# taken by the agent
-			for step in step_history['actions']:
-				if step['action']:
-					idx = np.where(step['candidate'] == 1)
-					table_1, table_2 = table_mapping[idx]
-					query_str = get_view_creation_query(table_1, table_2)
-					exp_analyze = self.database.explain_analyze_query(query_str)
-					execution_time = parse_for_exec_time(exp_analyze)
-					run_time = run_time + execution_time
-
+			if len(step_history['actions']) > 0:
+				for step in step_history['actions']:
+					if step['action']:
+						idx = np.where(step['candidate'] == 1)
+						print(idx)
+						temp = self.join_table_mapping[int(idx)].split('-')
+						table_1 = temp[0]
+						table_2 = temp[1]
+						query_str = get_view_creation_query(table_1, table_2)
+						start_time = time.time()
+						query_output = self.database.execute_query(query_str)
+						total_time = time.time() - start_time
+						print('View Creation Time taken - ' + str(total_time))
+						run_time = run_time + total_time
+			print('Total runtime - ' + str(run_time))
 			print('---------------------------------------------------')
 		return run_time
 
@@ -206,6 +233,7 @@ class DatabaseEnv(gym.Env):
 	def calculate_reward_for_episode(self):
 		initial_reward = 20
 		env_reward = self.env_cost_of_episode()
+		print(env_reward)
 		hawc_reward = self.hawc_cost_for_episode()
 		return ((env_reward - initial_reward) / 
 					(hawc_reward - initial_reward)) * 1000
@@ -213,7 +241,7 @@ class DatabaseEnv(gym.Env):
 	def _take_action(self, action, candidate, delay_modifier):
 		if action:
 			# Add the created view to the obs space
-			self._obs_space = np.add(self._obs_space, candidate)
+			# self._obs_space = np.add(self._obs_space, candidate)
 			# Calculate reward
 			if self.current_step < self.max_steps - 1:
 				reward = 1
@@ -232,8 +260,8 @@ class DatabaseEnv(gym.Env):
 				# to calculate a useful cost for episode
 				# - Calculate reward using that
 				reward = self.calculate_reward_for_episode()
-		return reward
+		return reward, False
 
 database = DatabaseEnv()
-database.step(1)
-database.reset()
+for i in range(50):
+	database.step(np.random.randint(2))

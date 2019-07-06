@@ -13,5 +13,4 @@ WHERE k.keyword ='character-name-in-title'
   AND ml.movie_id = t1.id
   AND ml.linked_movie_id = t2.id
   AND lt.id = ml.link_type_id
-  AND mk.movie_id = t1.id;
-
+  AND mk.movie_id = t1.id

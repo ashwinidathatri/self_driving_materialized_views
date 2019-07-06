@@ -1,10 +1,10 @@
 from pyhive import hive
 
 class Database():
-	def __init__(self, args):
-		self.cursor = get_cursor_for_hivedb(args['hive'])
+	def __init__(self):
+		self.cursor = self.get_cursor_for_hivedb()
 	
-	def get_cursor_for_hivedb(self, args):
+	def get_cursor_for_hivedb(self):
 		cursor = hive.connect(host='localhost', port=9000).cursor()
 		return cursor
 

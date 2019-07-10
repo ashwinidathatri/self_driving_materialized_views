@@ -1,26 +1,10 @@
 import os
 import pickle
 import numpy as np
-from agents.agent_runner import DummyAgent
 import gym
 import database_env as env
 from env.env_runner import EnvRunner
-
-def run_environment():
-    env_runner_params = {
-        'max_steps': 10
-    }
-    runner = EnvRunner(env_runner_params)
-    agent_params = {}
-    agent = DummyAgent(agent_params)
-    env_params = {
-        'n_tables': 21,
-        'max_steps': 10
-    }
-    environment = gym.make('foo-v0', args = env_params)
-    runner.run(environment, agent)
-
-run_environment()   
+import json
 
 def createVectorTable(tableI):
     iValue  = 0
@@ -64,18 +48,15 @@ def parseQuery(qName,tableI):
             
             query_str = open(qName, "r").read()                
             query_str = query_str.upper()
-            print(query_str)
             query_str = query_str.replace("(", " ")
             query_str = query_str.replace(")", " ")
             query_str = query_str.replace(" OR ", " AND ")
                 
-                #print(query_str)
             temp_str = ""                    
             from_index = query_str.index("\nFROM ")
             from_index = from_index + 6                    
             where_index = query_str.index("\nWHERE ")                    
             temp_str = query_str[from_index:where_index]
-                #print(temp_str)  
                     
             for word in temp_str.split("\n"):
                 from_str = from_str + word.strip()
@@ -86,13 +67,10 @@ def parseQuery(qName,tableI):
                     
             for word in temp_str.split("\n"):
                 where_str = where_str + word.strip()
-            #print(from_str)
-            #print(where_str)
             pos = 0    
             index = 0                
                 
             while 1:
-                    #print(from_str)
                 index = from_str.find("," , pos)
                 if index == -1:
                     empstr = from_str[pos:]
@@ -104,7 +82,7 @@ def parseQuery(qName,tableI):
                     alis_dict.update( { empstr[empstr.find(" AS ")+3:].strip() : empstr[0:empstr.find(" AS ")].strip() } )
                 pos = index + 1           
 
-
+            print(alis_dict)
             posw = 0
             indexw = 0
             while 1:
@@ -118,7 +96,7 @@ def parseQuery(qName,tableI):
                     temp_str = where_str[posw : indexw].strip()
                     thelist.append(temp_str)
                 posw = indexw + 3
-                
+            print(thelist)
             for eachstr in thelist:
                 if  eachstr.find("=") != -1:
                     s1 = eachstr[0 : eachstr.find("=")].strip()
@@ -127,14 +105,20 @@ def parseQuery(qName,tableI):
                         matrix = [[0 for col in range(size)] for row in range(1)]
                         finalStr = alis_dict.get(s1[0 : s1.find(".") ]) + "-"+ alis_dict.get( s2[0 : s2.find(".")])
                         reverseStr  =  alis_dict.get( s2[0 : s2.find(".")]) + "-" + alis_dict.get(s1[0 : s1.find(".") ])
+                        print(finalStr)
+                        print(reverseStr)
                         col_num = tableI.get(finalStr)
+                        print(col_num)
                         if(col_num == None):
                             col_num = tableI.get(reverseStr)
+                            print(col_num)
                             if(col_num != None):
-                                #print(col_num)
                                 matrix[0][col_num] = 1                        
                                 matrix = np.asarray(matrix)
+                                print(matrix)
+                                print(np.shape(matrix))
                                 matrixList.append(matrix)
+            print(matrixList)
             return matrixList
 
 def allTablesIndex(dataPath):
@@ -153,16 +137,11 @@ def allTablesIndex(dataPath):
         for file in files:
             filename = file[file.rfind("/")+1:]
             query_str = os.path.join(dataPath,filename)
-            print(filename)
-            print(query_str)    
             query_str = open(query_str, "r").read()
-                #print(query_str)
             query_str = query_str.upper()
             query_str = query_str.replace("(", " ")
             query_str = query_str.replace(")", " ")
             query_str = query_str.replace(" OR ", " AND ")
-            print(query_str)
-                #print(query_str)
             temp_str = ""
                     
             from_index = query_str.index("\nFROM ")
@@ -171,7 +150,6 @@ def allTablesIndex(dataPath):
             where_index = query_str.index("\nWHERE ")
                     
             temp_str = query_str[from_index:where_index]
-                #print(temp_str)  
                     
             for word in temp_str.split("\n"):
                 from_str = from_str + word.strip()
@@ -187,7 +165,6 @@ def allTablesIndex(dataPath):
             pos = 0    
             index = 0
             while 1:
-                    #print(from_str)
                 index = from_str.find("," , pos)
                 if index == -1:
                     temp_str = from_str[pos:]
@@ -209,6 +186,8 @@ def allTablesIndex(dataPath):
                         table_index.update( { temp_str[0 : temp_str.find(" AS ")].strip() : idx } )
                 pos = index + 1
                     
+        # Hack!!
+        table_index['AKA_TITLE'] = 20
         vectorTable  = createVectorTable(table_index)
         return(vectorTable)
 
@@ -217,6 +196,8 @@ def process_job_dataset(job_dataset_path):
     files = [f for f in os.listdir(job_dataset_path) if f not in files_to_ignore]
     parsed_dataset = []
     vectorTableindex = allTablesIndex(job_dataset_path)
+    with open('data/JOB/processed/table_index_mapping.json', 'w') as json_file:
+        json.dump(vectorTableindex, json_file)
     # -----------------------------------------------------------------------------
     # In the JOB dataset, each SQL file is a query. So we save the parsed features
     # for each query and store it along with its filename for further use
@@ -224,19 +205,19 @@ def process_job_dataset(job_dataset_path):
     # -----------------------------------------------------------------------------
     for file in files:
         filename = file[file.rfind("/")+1:]
+        print('------------------------------------------------')
         filename  = os.path.join(job_dataset_path, filename)
-        #print(filename)
+        print(filename)
         query_features = parseQuery(filename,vectorTableindex)
         parsed_dataset.append(
            {
                 filename : query_features
             }
         )
-        #print(parsed_dataset)
+        print('------------------------------------------------')
     output_path = os.path.join(job_dataset_path, 'processed')
     if not os.path.exists(output_path):
         os.makedirs(output_path)
-    print(parsed_dataset)
     # Store the stuff we parsed to pickle, because why not?
     with open(os.path.join(output_path, 'job_processed.pickle'), 'wb') as f:
         pickle.dump(parsed_dataset, f)    
@@ -248,3 +229,7 @@ def load_parsed_dataset(dataset_path):
     with open(dataset_path, 'rb') as pickle_file:
         content = pickle.load(pickle_file)
     return content
+
+process_job_dataset('data/JOB/')
+d = load_parsed_dataset('data/JOB/processed/job_processed.pickle')
+print(d)

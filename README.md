@@ -1,5 +1,10 @@
 # Self Driving Materialized Views
-TODO - Add a good readme.md for this project
+
+# Brief Introduction
+
+Usage of intermediate results of queries can reduce the computational cost and improve DB performance. The problem of Materialized View Selection is addressed here. There can be static or dynamic approaches to the this problem. 
+Here we consider a dynamic approach, based on deep reinforcement learning. We implement a prototype using the Apache Hive, SQL-on-Hadoop database and we experiment using the Join Order Benchmark. Hive improves the computational cost and query performance by rewriting the queries in accordance with selected materialized views. With the usage of Deep Reinforcement Learning we develop a system called Selma DQM, wherein the incremental value of materializing certain views is evaluated. This is based on selection and eviction policies. This system aims to be an improvement to the heuristic approach and works on an evolving workload. The system is trained using existing queries.
+
 
 ### Usage
 To process the JOB dataset which is placed in *project/data/JOB*, go to folder *project* and run
@@ -11,15 +16,3 @@ To see all the options provided by the CLI, you can use the help option
 ```
 python3 selma_cli.py -h
 ```
-
-# Standard Git workflow for Project
-
-- MOST IMPORTANT RULE -- NEVER PUSH TO MASTER
-- To start off, branch off from master and create your branch for development (the changes you want to add).
-- Do all changes nicely, add changes, and commit changes on your local repo.
-- Try to ensure that the commit message explains the changes being made within the commit
-- Once its all good, push your branch to origin ('our remote repo')
-- Create a Pull Request
-- Wait for Pull Request to be reviewed by someone, discuss changes, and get everything in place.
-- Merge the Pull Request
-- Chill
